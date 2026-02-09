@@ -26,7 +26,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
@@ -49,7 +48,7 @@ export const authAPI = {
 export const qrAPI = {
   generateQR: (qrData) => api.post('/qr/generate', qrData),
   getHistory: () => api.get('/qr/history'),
-  deleteQR: (qrId) => api.delete(`/qr/${qrId}`),
+  deleteQR: (qrId) => api.delete(`/qr/${qrId}`), // ✅ correct
   updateQR: (qrId, qrData) => api.put(`/qr/${qrId}`, qrData),
 };
 

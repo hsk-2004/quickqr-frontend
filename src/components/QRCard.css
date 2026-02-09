@@ -1,139 +1,112 @@
 .qr-card {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  height: 100%;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .qr-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
+/* Image */
 .qr-image-container {
-  background: #f5f5f5;
-  padding: 1.5rem;
   display: flex;
-  align-items: center;
   justify-content: center;
-  min-height: 200px;
+  align-items: center;
 }
 
 .qr-image {
-  max-width: 100%;
-  max-height: 200px;
-  width: auto;
-  height: auto;
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
 }
 
+/* Info */
 .qr-info {
-  padding: 1.5rem;
-  flex: 1;
+  text-align: center;
 }
 
-.qr-name {
-  color: #667eea;
-  margin: 0 0 0.5rem 0;
+.qr-title {
   font-size: 1.1rem;
-  word-break: break-word;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.25rem;
 }
 
 .qr-url {
-  color: #666;
-  margin: 0.5rem 0;
   font-size: 0.9rem;
+  color: #555;
   word-break: break-all;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }
 
 .qr-date {
-  color: #999;
-  margin: 0.5rem 0 0 0;
-  font-size: 0.85rem;
-}
-
-.error-message {
-  background-color: #fee;
-  color: #c33;
-  padding: 0.5rem;
-  border-radius: 4px;
+  display: block;
   margin-top: 0.5rem;
-  border-left: 3px solid #c33;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  color: #777;
 }
 
+/* Actions */
 .qr-actions {
   display: flex;
   gap: 0.5rem;
-  padding: 1rem 1.5rem;
-  background: #f9f9f9;
-  border-top: 1px solid #eee;
 }
 
-.action-btn {
+.qr-actions button {
   flex: 1;
-  padding: 0.6rem 0.8rem;
-  border: none;
-  border-radius: 4px;
+  padding: 0.6rem;
   font-size: 0.9rem;
+  border-radius: 6px;
+  border: none;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background-color: #f1f3f5;
+  transition: background 0.2s ease, transform 0.1s ease;
 }
 
-.copy-btn {
-  background-color: #e8f0ff;
-  color: #667eea;
+.qr-actions button:hover:not(:disabled) {
+  background-color: #e0e5ff;
 }
 
-.copy-btn:hover {
-  background-color: #667eea;
-  color: white;
-}
-
-.download-btn {
-  background-color: #e8f8e8;
-  color: #3c3;
-}
-
-.download-btn:hover:not(:disabled) {
-  background-color: #3c3;
-  color: white;
-}
-
-.delete-btn {
-  background-color: #fee;
-  color: #c33;
-}
-
-.delete-btn:hover:not(:disabled) {
-  background-color: #c33;
-  color: white;
-}
-
-.action-btn:disabled {
+.qr-actions button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* Danger button */
+.qr-actions .danger {
+  background-color: #ffecec;
+  color: #c0392b;
+}
+
+.qr-actions .danger:hover:not(:disabled) {
+  background-color: #ffd6d6;
+}
+
+/* Messages */
+.error-message {
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: #fee;
+  color: #c33;
+  font-size: 0.85rem;
+  border-left: 4px solid #c33;
+  border-radius: 4px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .qr-actions {
-    flex-wrap: wrap;
+  .qr-card {
+    padding: 1.2rem;
   }
 
-  .action-btn {
-    font-size: 0.8rem;
-    padding: 0.5rem 0.6rem;
+  .qr-image {
+    width: 120px;
+    height: 120px;
   }
 }

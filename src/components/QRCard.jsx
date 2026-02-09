@@ -1,94 +1,136 @@
-import React, { useState } from 'react';
-import { qrAPI } from '../services/api';
+import React, { useState, useCallback } from 'react';
 import './QRCard.css';
 
-const QRCard = ({ qr, onDelete, onUpdate }) => {
+const QRCard = ({ qr, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
-  const handleDelete = async () => {
-    if (window.confirm(`Are you sure you want to delete "${qr.name}"?`)) {
+  /**
+   * Delete QR (delegates actual delete to parent)
+   */
+  const handleDelete = useCallback(async () => {
+    if (!qr?.id) {
+      console.error('[QRCard] Missing QR id:', qr);
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${qr.name}"?`
+    );
+    if (!confirmed) return;
+
+    try {
       setIsDeleting(true);
-      setError(null);
-      try {
-        await qrAPI.deleteQR(qr.id);
-        if (onDelete) {
-          onDelete(qr.id);
-        }
-      } catch (err) {
-        const errorMessage = err.response?.data?.message || 'Failed to delete QR code';
-        setError(errorMessage);
-        setIsDeleting(false);
-      }
+      setError('');
+      await onDelete(qr.id);
+    } catch (err) {
+      console.error('[QRCard] Delete failed:', err);
+      setError('Failed to delete QR code. Please try again.');
+    } finally {
+      setIsDeleting(false);
     }
-  };
+  }, [qr, onDelete]);
 
-  const handleDownload = () => {
-    // Create a link to download the QR code image
-    if (qr.imageUrl) {
-      const link = document.createElement('a');
-      link.href = qr.imageUrl;
-      link.download = `${qr.name}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+  /**
+   * Download QR image
+   */
+  const handleDownload = useCallback(() => {
+    if (!qr?.imageUrl) return;
+
+    const link = document.createElement('a');
+    link.href = qr.imageUrl;
+    link.download = `${qr.name || 'qr-code'}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [qr]);
+
+  /**
+   * Copy QR URL
+   */
+  const handleCopyUrl = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(qr.url);
+      alert('URL copied to clipboard!');
+    } catch (err) {
+      console.error('[QRCard] Clipboard error:', err);
+      setError('Unable to copy URL.');
     }
-  };
-
-  const handleCopyUrl = () => {
-    navigator.clipboard.writeText(qr.url);
-    // Optional: Show toast notification here
-    alert('URL copied to clipboard!');
-  };
+  }, [qr]);
 
   return (
-    <div className="qr-card">
-      {qr.imageUrl && (
+    <article className="qr-card" aria-busy={isDeleting}>
+      {/* Image */}
+      {qr?.imageUrl && (
         <div className="qr-image-container">
-          <img src={qr.imageUrl} alt={qr.name} className="qr-image" />
+          <img
+            src={qr.imageUrl}
+            alt={`QR code for ${qr.name}`}
+            className="qr-image"
+            loading="lazy"
+          />
         </div>
       )}
 
+      {/* Info */}
       <div className="qr-info">
-        <h3 className="qr-name">{qr.name}</h3>
-        <p className="qr-url">{qr.url}</p>
-        
+        <h3 className="qr-title" title={qr.name}>
+          {qr.name}
+        </h3>
+
+        <p className="qr-url" title={qr.url}>
+          {qr.url}
+        </p>
+
         {qr.createdAt && (
-          <p className="qr-date">
+          <time
+            className="qr-date"
+            dateTime={new Date(qr.createdAt).toISOString()}
+          >
             Created: {new Date(qr.createdAt).toLocaleDateString()}
-          </p>
+          </time>
         )}
 
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div className="error-message" role="alert">
+            {error}
+          </div>
+        )}
       </div>
 
+      {/* Actions */}
       <div className="qr-actions">
         <button
-          className="action-btn copy-btn"
+          type="button"
           onClick={handleCopyUrl}
-          title="Copy URL"
+          aria-label="Copy QR URL"
         >
           📋 Copy
         </button>
+
         <button
-          className="action-btn download-btn"
+          type="button"
           onClick={handleDownload}
-          disabled={!qr.imageUrl}
-          title="Download QR Code"
+          disabled={!qr?.imageUrl}
+          aria-disabled={!qr?.imageUrl}
+          aria-label="Download QR"
         >
           ⬇️ Download
         </button>
+
         <button
-          className="action-btn delete-btn"
+          type="button"
           onClick={handleDelete}
           disabled={isDeleting}
-          title="Delete QR Code"
+          aria-disabled={isDeleting}
+          className="danger"
+          aria-label="Delete QR"
         >
-          {isDeleting ? '🗑️ Deleting...' : '🗑️ Delete'}
+          {isDeleting ? '🗑️ Deleting…' : '🗑️ Delete'}
         </button>
       </div>
-    </div>
+    </article>
   );
 };
 
-export default QRCard;
+export default React.memo(QRCard);
