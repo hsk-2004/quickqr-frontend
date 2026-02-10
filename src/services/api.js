@@ -9,7 +9,6 @@ const api = axios.create({
   },
 });
 
-// Add token to requests if it exists
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -21,7 +20,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Handle response errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -34,7 +32,6 @@ api.interceptors.response.use(
   }
 );
 
-// Auth endpoints
 export const authAPI = {
   register: (userData) => api.post('/auth/register', userData),
   login: (credentials) => api.post('/auth/login', credentials),
@@ -44,11 +41,10 @@ export const authAPI = {
   },
 };
 
-// QR Code endpoints
 export const qrAPI = {
   generateQR: (qrData) => api.post('/qr/generate', qrData),
   getHistory: () => api.get('/qr/history'),
-  deleteQR: (qrId) => api.delete(`/qr/${qrId}`), // ✅ correct
+  deleteQR: (qrId) => api.delete(`/qr/${qrId}`),
   updateQR: (qrId, qrData) => api.put(`/qr/${qrId}`, qrData),
 };
 

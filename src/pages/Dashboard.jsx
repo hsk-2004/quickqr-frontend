@@ -1,15 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { qrAPI } from '../services/api';
 import QRForm from '../components/QRForm';
 import QRCard from '../components/QRCard';
-import './Dashboard.css';
 
-/**
- * Dashboard page – authenticated user dashboard
- * Shows QR form + generated QR codes
- */
 export default function Dashboard() {
   const { user } = useAuth();
 
@@ -17,12 +12,11 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
-  // 🔥 Load QR history from backend
   useEffect(() => {
-    const loadQRCodes = async () => {
+    const fetchQRCodes = async () => {
       try {
         const res = await qrAPI.getHistory();
-        setQrCodes(res.data.map(normalizeQR));
+        setQrCodes((res?.data || []).map(normalizeQR));
       } catch (err) {
         console.error('Failed to load QR codes', err);
       } finally {
@@ -30,124 +24,225 @@ export default function Dashboard() {
       }
     };
 
-    loadQRCodes();
+    fetchQRCodes();
   }, []);
 
-  // 🔥 Handle create
-  const handleCreateQR = (qrFromBackend) => {
-    const qrData = qrFromBackend.qr || qrFromBackend;
-    setQrCodes((prev) => [normalizeQR(qrData), ...prev]);
-  };
+  const handleCreateQR = useCallback((qrFromBackend) => {
+    if (!qrFromBackend) return;
 
-  // 🔥 Delete QR
-  const handleDeleteQR = async (id) => {
+    const qrData = normalizeQR(qrFromBackend.qr || qrFromBackend);
+
+    setQrCodes((prev) => {
+      if (prev.some((q) => q.id === qrData.id)) return prev;
+      return [qrData, ...prev];
+    });
+  }, []);
+
+  const handleDeleteQR = useCallback(async (id) => {
     try {
       await qrAPI.deleteQR(id);
-      setQrCodes((prev) => prev.filter((qr) => qr.id !== id));
-    } catch (err) {
-      alert('Failed to delete QR');
+      setQrCodes((prev) => prev.filter((q) => q.id !== id));
+    } catch {
+      alert('Failed to delete QR. Try again.');
     }
-  };
+  }, []);
 
-  const filteredQRCodes = qrCodes.filter((qr) =>
-    filter === 'all' ? true : qr.type === filter
+  const qrTypes = useMemo(
+    () => ['all', ...new Set(qrCodes.map((q) => q.type).filter(Boolean))],
+    [qrCodes]
   );
 
-  const qrTypes = ['all', ...new Set(qrCodes.map((qr) => qr.type).filter(Boolean))];
+  const filteredQRCodes = useMemo(() => {
+    if (filter === 'all') return qrCodes;
+    return qrCodes.filter((qr) => qr.type === filter);
+  }, [qrCodes, filter]);
+
+  const stats = useMemo(
+    () => [
+      {
+        icon: '📊',
+        label: 'Total QR Codes',
+        value: qrCodes.length,
+        color: 'from-primary-100 to-primary-200 text-primary-700',
+      },
+      {
+        icon: '📅',
+        label: 'Created Today',
+        value: qrCodes.filter(
+          (q) =>
+            new Date(q.createdAt).toDateString() ===
+            new Date().toDateString()
+        ).length,
+        color: 'from-green-100 to-green-200 text-green-700',
+      },
+      {
+        icon: '🏷️',
+        label: 'QR Types',
+        value: qrTypes.length - 1,
+        color: 'from-secondary-100 to-pink-200 text-secondary-700',
+      },
+    ],
+    [qrCodes, qrTypes]
+  );
 
   return (
-    <motion.div className="dashboard-container">
-      {/* HEADER */}
-      <div className="dashboard-header">
-        <div className="header-content">
-          <h1>
-            Welcome back, <span className="username">{user?.username}</span> 👋
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen bg-gradient-to-br from-white via-primary-50 to-secondary-50"
+    >
+      {/* Header Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+        <motion.div
+          initial={{ y: -15, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-2">
+            Welcome back,
+            <span className="ml-2 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+              {user?.username || 'User'}
+            </span>
           </h1>
-          <p>Generate and manage your QR codes</p>
-        </div>
-      </div>
+          <p className="text-lg text-gray-600">
+            Manage and track all your QR codes in one place
+          </p>
+        </motion.div>
 
-      {/* STATS */}
-      <div className="dashboard-stats">
-        <div className="stat-card">
-          <div className="stat-info">
-            <h3>{qrCodes.length}</h3>
-            <p>Total QR Codes</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-info">
-            <h3>
-              {
-                qrCodes.filter(
-                  (qr) =>
-                    new Date(qr.createdAt).toDateString() ===
-                    new Date().toDateString()
-                ).length
-              }
-            </h3>
-            <p>Created Today</p>
-          </div>
-        </div>
-      </div>
-
-      {/* CONTENT */}
-      <div className="dashboard-content">
-        <div className="qr-form-section">
-          <QRForm onQRGenerated={handleCreateQR} />
-        </div>
-
-        <div className="qr-cards-section">
-          <div className="section-header">
-            <h2>Your QR Codes</h2>
-
-            {qrCodes.length > 0 && (
-              <div className="filter-buttons">
-                {qrTypes.map((type) => (
-                  <button
-                    key={type}
-                    className={`filter-btn ${filter === type ? 'active' : ''}`}
-                    onClick={() => setFilter(type)}
-                  >
-                    {type}
-                  </button>
-                ))}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {stats.map((stat, idx) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1, duration: 0.5 }}
+              whileHover={{ y: -4 }}
+              className={`rounded-2xl p-6 bg-gradient-to-br ${stat.color} shadow-md hover:shadow-lg transition-shadow`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold opacity-75 mb-1">
+                    {stat.label}
+                  </p>
+                  <p className="text-4xl font-bold">{stat.value}</p>
+                </div>
+                <span className="text-4xl opacity-40">{stat.icon}</span>
               </div>
-            )}
-          </div>
-
-          <AnimatePresence>
-            {isLoading ? (
-              <p>Loading QR codes...</p>
-            ) : filteredQRCodes.length === 0 ? (
-              <p>No QR codes yet</p>
-            ) : (
-              <div className="qr-cards-grid">
-                {filteredQRCodes.map((qr) => (
-                  <QRCard
-                    key={qr.id}
-                    qr={qr}
-                    onDelete={handleDeleteQR}
-                  />
-                ))}
-              </div>
-            )}
-          </AnimatePresence>
+            </motion.div>
+          ))}
         </div>
-      </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* QR Form */}
+          <motion.div
+            initial={{ x: -30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="lg:col-span-1"
+          >
+            <QRForm onQRGenerated={handleCreateQR} />
+          </motion.div>
+
+          {/* QR List */}
+          <motion.div
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="lg:col-span-2"
+          >
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              {/* Header */}
+              <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-primary-50">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900">Your QR Codes</h2>
+                  <span className="text-sm font-medium text-gray-600">
+                    {filteredQRCodes.length} {filteredQRCodes.length === 1 ? 'code' : 'codes'}
+                  </span>
+                </div>
+
+                {/* Filter Buttons */}
+                <div className="flex flex-wrap gap-2">
+                  {qrTypes.map((type) => (
+                    <motion.button
+                      key={type}
+                      onClick={() => setFilter(type)}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                        filter === type
+                          ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
+                          : 'bg-white text-gray-700 border border-gray-300 hover:border-primary-300 hover:bg-primary-50'
+                      }`}
+                    >
+                      {type === 'all' ? '📋 All' : `${type.charAt(0).toUpperCase() + type.slice(1)}`}
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <AnimatePresence mode="popLayout">
+                  {isLoading ? (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="py-16 text-center"
+                    >
+                      <div className="inline-flex gap-2 mb-4">
+                        <span className="inline-block w-3 h-3 rounded-full bg-primary-400 animate-bounce" />
+                        <span className="inline-block w-3 h-3 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: '0.1s' }} />
+                        <span className="inline-block w-3 h-3 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: '0.2s' }} />
+                      </div>
+                      <p className="text-gray-600 font-medium">Loading your QR codes...</p>
+                    </motion.div>
+                  ) : filteredQRCodes.length === 0 ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      className="py-16 text-center"
+                    >
+                      <p className="text-5xl mb-4">📭</p>
+                      <p className="text-gray-600 font-medium">
+                        {filter === 'all'
+                          ? 'No QR codes yet. Create your first one!'
+                          : `No QR codes of type "${filter}"`}
+                      </p>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      layout
+                      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
+                      <AnimatePresence>
+                        {filteredQRCodes.map((qr) => (
+                          <QRCard key={qr.id} qr={qr} onDelete={handleDeleteQR} />
+                        ))}
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
     </motion.div>
   );
 }
 
-/**
- * Normalize backend QR safely
- */
-const normalizeQR = (qr) => ({
+/* Normalizer */
+const normalizeQR = (qr = {}) => ({
   id: qr.id,
-  name: qr.name,
-  url: qr.url,
-  imageUrl: qr.image_url || qr.imageUrl,
-  createdAt: qr.created_at || qr.createdAt || new Date().toISOString(),
-  type: qr.type || 'url',
+  name: qr.name ?? '',
+  url: qr.url ?? '',
+  imageUrl: qr.image_url ?? qr.imageUrl ?? '',
+  createdAt: qr.created_at ?? qr.createdAt ?? new Date().toISOString(),
+  type: qr.type ?? 'url',
 });
