@@ -171,11 +171,11 @@ export default function History() {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-sm text-right">
-                          <div className="flex justify-end gap-2">
-                            <button className="px-4 py-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 font-semibold transition-colors text-sm">
+                          <div className="flex flex-col sm:flex-row justify-end gap-2">
+                            <button className="px-3 sm:px-4 py-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 font-semibold transition-colors text-sm whitespace-nowrap">
                               📥 Download
                             </button>
-                            <button className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 font-semibold transition-colors text-sm">
+                            <button className="px-3 sm:px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 font-semibold transition-colors text-sm whitespace-nowrap">
                               🗑️ Delete
                             </button>
                           </div>

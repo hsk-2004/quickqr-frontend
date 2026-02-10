@@ -59,11 +59,12 @@ const QRCard = ({ qr, onDelete }) => {
     >
       {/* QR Image Container */}
       {qr?.imageUrl && (
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 flex items-center justify-center">
+        <div className="bg-gradient-to-br from-gray-400 to-gray-500 p-8 flex items-center justify-center">
           <img
             src={qr.imageUrl}
             alt={`QR code for ${qr.name}`}
-            className="w-40 h-40 object-contain"
+            className="w-48 h-48 object-contain"
+            style={{ imageRendering: 'crisp-edges' }}
             loading="lazy"
           />
         </div>
@@ -108,13 +109,13 @@ const QRCard = ({ qr, onDelete }) => {
       </div>
 
       {/* QR Actions */}
-      <div className="grid grid-cols-3 gap-3 p-4 border-t border-gray-200 bg-gray-50">
+      <div className="grid grid-cols-3 gap-3 p-4 border-t border-gray-500 bg-gray-300">
         <motion.button
           type="button"
           onClick={handleCopyUrl}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center justify-center gap-1 py-2 px-3 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-primary-50 hover:border-primary-300 hover:text-primary-600 transition-all text-sm font-medium"
+          className="flex items-center justify-center gap-1 py-2 px-3 bg-gray-300 text-gray-900 border border-gray-500 rounded-lg hover:bg-primary-200 hover:border-primary-500 hover:text-primary-900 transition-all text-sm font-medium"
           aria-label="Copy QR URL"
           title="Copy URL"
         >
@@ -128,7 +129,7 @@ const QRCard = ({ qr, onDelete }) => {
           disabled={!qr?.imageUrl}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center justify-center gap-1 py-2 px-3 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-primary-50 hover:border-primary-300 hover:text-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-medium"
+          className="flex items-center justify-center gap-1 py-2 px-3 bg-gray-300 text-gray-900 border border-gray-500 rounded-lg hover:bg-primary-200 hover:border-primary-500 hover:text-primary-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-medium"
           aria-disabled={!qr?.imageUrl}
           aria-label="Download QR"
           title="Download QR Code"
@@ -143,7 +144,7 @@ const QRCard = ({ qr, onDelete }) => {
           disabled={isDeleting}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center justify-center gap-1 py-2 px-3 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-medium"
+          className="flex items-center justify-center gap-1 py-2 px-3 bg-red-300 text-red-900 border border-red-500 rounded-lg hover:bg-red-400 hover:border-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-medium"
           aria-disabled={isDeleting}
           aria-label="Delete QR"
           title="Delete QR Code"
