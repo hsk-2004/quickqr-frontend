@@ -51,7 +51,7 @@ const QRCard = ({ qr, onDelete }) => {
 
   return (
     <motion.article
-      className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 h-full flex flex-col"
+      className="bg-gray-300 rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 h-full flex flex-col"
       whileHover={{ y: -4 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -71,7 +71,7 @@ const QRCard = ({ qr, onDelete }) => {
       )}
 
       {/* QR Info */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 bg-gray-300">
         <h3
           className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 hover:text-primary-600 transition-colors"
           title={qr.name}
@@ -80,7 +80,7 @@ const QRCard = ({ qr, onDelete }) => {
         </h3>
 
         <p
-          className="text-sm text-gray-600 mb-3 line-clamp-2 break-all font-mono"
+          className="text-sm text-gray-800 mb-3 line-clamp-2 break-all font-mono"
           title={qr.url}
         >
           {qr.url}
@@ -88,7 +88,7 @@ const QRCard = ({ qr, onDelete }) => {
 
         {qr.createdAt && (
           <time
-            className="text-xs text-gray-500 flex items-center gap-2"
+            className="text-xs text-gray-700 flex items-center gap-2"
             dateTime={new Date(qr.createdAt).toISOString()}
           >
             <span>📅</span>
@@ -100,7 +100,7 @@ const QRCard = ({ qr, onDelete }) => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg"
+            className="mt-3 p-3 bg-red-200 border border-red-400 rounded-lg"
             role="alert"
           >
             <p className="text-red-700 text-xs font-medium">{error}</p>
