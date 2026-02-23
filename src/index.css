@@ -18,7 +18,8 @@ body {
     'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @apply bg-white text-gray-900;
+  background-color: #08080f;
+  color: #ffffff;
 }
 
 /* Remove default link underlines */

@@ -17,7 +17,11 @@ const Header = () => {
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="sticky top-0 z-50 backdrop-blur-xl bg-gradient-to-r from-primary-500 to-secondary-500 shadow-xl"
+      style={{
+        background: 'rgba(8, 8, 15, 0.8)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+      }}
+      className="sticky top-0 z-50 backdrop-blur-xl"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         {/* BRAND */}
@@ -32,7 +36,7 @@ const Header = () => {
             <>
               <ul className="flex items-center gap-8">
                 <li>
-                  <Link 
+                  <Link
                     to="/dashboard"
                     className="text-white font-semibold hover:text-primary-50 transition-colors duration-200"
                   >
@@ -40,7 +44,7 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link 
+                  <Link
                     to="/history"
                     className="text-white font-semibold hover:text-primary-50 transition-colors duration-200"
                   >
@@ -55,7 +59,11 @@ const Header = () => {
                 </span>
                 <button
                   onClick={handleLogout}
-                  className="px-6 py-2 rounded-full bg-white text-primary-600 font-semibold hover:bg-primary-50 transition-all duration-200 transform hover:scale-105 shadow-md"
+                  style={{
+                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                    boxShadow: '0 0 20px rgba(99,102,241,0.4)',
+                  }}
+                  className="px-6 py-2 rounded-full text-white font-semibold hover:opacity-90 transition-all duration-200 transform hover:scale-105"
                 >
                   Logout
                 </button>
@@ -63,7 +71,7 @@ const Header = () => {
             </>
           ) : (
             <div className="flex items-center gap-4">
-              <Link 
+              <Link
                 to="/login"
                 className="text-white font-semibold hover:text-primary-50 transition-colors duration-200"
               >
@@ -71,7 +79,11 @@ const Header = () => {
               </Link>
               <Link
                 to="/register"
-                className="px-6 py-2 rounded-full bg-white text-primary-600 font-semibold hover:bg-primary-50 transition-all duration-200 transform hover:scale-105 shadow-md"
+                style={{
+                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  boxShadow: '0 0 20px rgba(99,102,241,0.4)',
+                }}
+                className="px-6 py-2 rounded-full text-white font-semibold hover:opacity-90 transition-all duration-200 transform hover:scale-105"
               >
                 Get Started
               </Link>
@@ -103,15 +115,15 @@ const Header = () => {
           >
             {isAuthenticated ? (
               <div className="flex flex-col items-stretch gap-4">
-                <Link 
-                  onClick={() => setMenuOpen(false)} 
+                <Link
+                  onClick={() => setMenuOpen(false)}
                   to="/dashboard"
                   className="text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors duration-200 text-center"
                 >
                   Dashboard
                 </Link>
-                <Link 
-                  onClick={() => setMenuOpen(false)} 
+                <Link
+                  onClick={() => setMenuOpen(false)}
                   to="/history"
                   className="text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors duration-200 text-center"
                 >
@@ -132,8 +144,8 @@ const Header = () => {
               </div>
             ) : (
               <div className="flex flex-col items-stretch gap-4">
-                <Link 
-                  onClick={() => setMenuOpen(false)} 
+                <Link
+                  onClick={() => setMenuOpen(false)}
                   to="/login"
                   className="text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors duration-200 text-center"
                 >

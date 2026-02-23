@@ -51,110 +51,156 @@ const QRCard = ({ qr, onDelete }) => {
 
   return (
     <motion.article
-      className="bg-gray-300 rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 h-full flex flex-col"
-      whileHover={{ y: -4 }}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      aria-busy={isDeleting}
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      whileHover={{ y: -6, scale: 1.02 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+      style={{
+        background: 'rgba(255, 255, 255, 0.03)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: 20,
+        overflow: 'hidden',
+        backdropFilter: 'blur(10px)',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+      }}
     >
+      {/* Type badge */}
+      <div style={{
+        position: 'absolute', top: 12, right: 12,
+        background: 'rgba(99, 102, 241, 0.2)',
+        border: '1px solid rgba(99, 102, 241, 0.3)',
+        color: '#a5b4fc',
+        fontSize: 10,
+        padding: '2px 8px',
+        borderRadius: 6,
+        fontFamily: 'monospace',
+        zIndex: 2,
+        textTransform: 'uppercase',
+      }}>
+        {qr.type || 'URL'}
+      </div>
+
       {/* QR Image Container */}
-      {qr?.imageUrl && (
-        <div className="bg-gradient-to-br from-gray-400 to-gray-500 p-8 flex items-center justify-center">
-          <img
+      <div style={{
+        padding: 24,
+        background: 'rgba(255, 255, 255, 0.02)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Decorative corner */}
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 20, height: 20, borderLeft: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }} />
+
+        {qr?.imageUrl ? (
+          <motion.img
             src={qr.imageUrl}
-            alt={`QR code for ${qr.name}`}
-            className="w-48 h-48 object-contain"
-            style={{ imageRendering: 'crisp-edges' }}
-            loading="lazy"
+            alt={qr.name}
+            style={{
+              width: 140,
+              height: 140,
+              objectFit: 'contain',
+              borderRadius: 8,
+              background: '#fff',
+              padding: 8,
+              boxShadow: '0 0 30px rgba(0,0,0,0.3)',
+            }}
+            whileHover={{ scale: 1.1, rotate: 2 }}
           />
-        </div>
-      )}
-
-      {/* QR Info */}
-      <div className="flex-1 p-6 bg-gray-300">
-        <h3
-          className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 hover:text-primary-600 transition-colors"
-          title={qr.name}
-        >
-          {qr.name}
-        </h3>
-
-        <p
-          className="text-sm text-gray-800 mb-3 line-clamp-2 break-all font-mono"
-          title={qr.url}
-        >
-          {qr.url}
-        </p>
-
-        {qr.createdAt && (
-          <time
-            className="text-xs text-gray-700 flex items-center gap-2"
-            dateTime={new Date(qr.createdAt).toISOString()}
-          >
-            <span>📅</span>
-            Created: {new Date(qr.createdAt).toLocaleDateString()}
-          </time>
-        )}
-
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-3 p-3 bg-red-200 border border-red-400 rounded-lg"
-            role="alert"
-          >
-            <p className="text-red-700 text-xs font-medium">{error}</p>
-          </motion.div>
+        ) : (
+          <div style={{ width: 140, height: 140, background: 'rgba(255,255,255,0.05)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.1)', fontSize: 40 }}>◈</div>
         )}
       </div>
 
-      {/* QR Actions */}
-      <div className="grid grid-cols-3 gap-3 p-4 border-t border-gray-500 bg-gray-300">
-        <motion.button
-          type="button"
-          onClick={handleCopyUrl}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center justify-center gap-1 py-2 px-3 bg-gray-300 text-gray-900 border border-gray-500 rounded-lg hover:bg-primary-200 hover:border-primary-500 hover:text-primary-900 transition-all text-sm font-medium"
-          aria-label="Copy QR URL"
-          title="Copy URL"
-        >
-          <span>📋</span>
-          <span className="hidden sm:inline text-xs">Copy</span>
-        </motion.button>
+      {/* Content */}
+      <div style={{ padding: '20px 24px', flex: 1 }}>
+        <h3 style={{
+          margin: '0 0 6px 0',
+          fontSize: 16,
+          fontWeight: 700,
+          color: '#fff',
+          letterSpacing: '-0.3px',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}>
+          {qr.name || 'Untitled Project'}
+        </h3>
 
-        <motion.button
-          type="button"
-          onClick={handleDownload}
-          disabled={!qr?.imageUrl}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center justify-center gap-1 py-2 px-3 bg-gray-300 text-gray-900 border border-gray-500 rounded-lg hover:bg-primary-200 hover:border-primary-500 hover:text-primary-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-medium"
-          aria-disabled={!qr?.imageUrl}
-          aria-label="Download QR"
-          title="Download QR Code"
-        >
-          <span>⬇️</span>
-          <span className="hidden sm:inline text-xs">Save</span>
-        </motion.button>
+        <p style={{
+          margin: 0,
+          fontSize: 12,
+          color: 'rgba(255,255,255,0.35)',
+          fontFamily: 'monospace',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          marginBottom: 16,
+        }}>
+          {qr.url}
+        </p>
 
-        <motion.button
-          type="button"
-          onClick={handleDelete}
-          disabled={isDeleting}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center justify-center gap-1 py-2 px-3 bg-red-300 text-red-900 border border-red-500 rounded-lg hover:bg-red-400 hover:border-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-medium"
-          aria-disabled={isDeleting}
-          aria-label="Delete QR"
-          title="Delete QR Code"
-        >
-          <span>🗑️</span>
-          <span className="hidden sm:inline text-xs">{isDeleting ? 'Del...' : 'Del'}</span>
-        </motion.button>
+        {error && (
+          <div style={{ fontSize: 11, color: '#fca5a5', marginBottom: 12, background: 'rgba(239, 68, 68, 0.1)', padding: '6px 10px', borderRadius: 8 }}>
+            {error}
+          </div>
+        )}
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+          <ActionButton icon="📋" onClick={handleCopyUrl} tooltip="Copy URL" />
+          <ActionButton icon="⬇️" onClick={handleDownload} disabled={!qr?.imageUrl} tooltip="Download" />
+          <ActionButton icon="🗑️" onClick={handleDelete} danger disabled={isDeleting} tooltip="Delete" />
+        </div>
+      </div>
+
+      {/* Footer date */}
+      <div style={{
+        padding: '12px 24px',
+        borderTop: '1px solid rgba(255, 255, 255, 0.04)',
+        fontSize: 10,
+        color: 'rgba(255,255,255,0.2)',
+        fontFamily: 'monospace',
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}>
+        <span>CREATED</span>
+        <span>{new Date(qr.createdAt).toLocaleDateString()}</span>
       </div>
     </motion.article>
   );
 };
+
+/* ── Internal Button Component ─────────────────────────────── */
+function ActionButton({ icon, onClick, danger, disabled, tooltip }) {
+  return (
+    <motion.button
+      whileHover={{ scale: 1.05, background: danger ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 255, 255, 0.08)' }}
+      whileTap={{ scale: 0.95 }}
+      onClick={onClick}
+      disabled={disabled}
+      title={tooltip}
+      style={{
+        height: 36,
+        borderRadius: 10,
+        border: danger ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid rgba(255, 255, 255, 0.08)',
+        background: 'rgba(255, 255, 255, 0.03)',
+        color: danger ? '#fca5a5' : '#fff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 14,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.4 : 1,
+        transition: 'all 0.2s',
+      }}
+    >
+      {icon}
+    </motion.button>
+  );
+}
 
 export default React.memo(QRCard);

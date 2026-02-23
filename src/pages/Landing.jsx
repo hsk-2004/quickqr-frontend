@@ -1,214 +1,163 @@
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
-/**
- * Landing page – mobile smooth + desktop premium
- */
+const GlowOrbs = () => (
+  <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+    <div style={{
+      position: 'absolute', top: '-10%', right: '-5%',
+      width: '60vw', height: '60vw', borderRadius: '50%',
+      background: 'radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)',
+      filter: 'blur(80px)',
+      animation: 'float 20s infinite alternate ease-in-out',
+    }} />
+    <div style={{
+      position: 'absolute', bottom: '-10%', left: '-5%',
+      width: '50vw', height: '50vw', borderRadius: '50%',
+      background: 'radial-gradient(circle, rgba(236,72,153,0.05) 0%, transparent 70%)',
+      filter: 'blur(80px)',
+      animation: 'float 25s infinite alternate-reverse ease-in-out',
+    }} />
+    <style>{`
+      @keyframes float { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px, 60px) scale(1.1); } }
+    `}</style>
+  </div>
+);
 
 export default function Landing() {
-  const prefersReducedMotion = useReducedMotion();
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const enableMotion = !prefersReducedMotion && !isMobile;
-
-  const smoothTransition = enableMotion
-    ? { type: 'spring', stiffness: 90, damping: 14 }
-    : { type: 'tween', duration: 0.25, ease: 'easeOut' };
-
-  /* Variants */
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: enableMotion
-        ? { staggerChildren: 0.12, delayChildren: 0.1 }
-        : {},
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: enableMotion ? 24 : 0 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: smoothTransition,
-    },
-  };
-
-  const titleVariants = {
-    hidden: { opacity: 0, scale: enableMotion ? 0.9 : 1 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: smoothTransition,
-    },
-  };
-
   const features = [
-    {
-      icon: '⚡',
-      title: 'Fast Generation',
-      description: 'Create QR codes instantly with our optimized engine',
-      color: 'from-primary-500 to-primary-600',
-    },
-    {
-      icon: '📊',
-      title: 'Track History',
-      description: 'Keep a detailed record of all your QR codes',
-      color: 'from-secondary-500 to-pink-600',
-    },
-    {
-      icon: '🔒',
-      title: 'Secure',
-      description: 'Your data is protected with JWT authentication',
-      color: 'from-pink-500 to-rose-600',
-    },
+    { icon: '⚡', title: 'Tactical Speed', desc: 'Generate high-fidelity QR assets in milliseconds.' },
+    { icon: '🛡️', title: 'Encrypted', desc: 'Secure asset management with industry-standard protocols.' },
+    { icon: '📊', title: 'Metrics', desc: 'Real-time monitoring of your digital bridging fleet.' },
   ];
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 overflow-hidden">
+    <div style={{ background: '#08080f', minHeight: '100vh', color: '#fff', position: 'relative', overflowX: 'hidden' }}>
+      <GlowOrbs />
 
-      {/* Background blobs – desktop only */}
-      {enableMotion && (
-        <div className="absolute inset-0 pointer-events-none hidden sm:block">
+      <main style={{ position: 'relative', zIndex: 1, maxWidth: 1200, margin: '0 auto', padding: '120px 24px 80px' }}>
+
+        {/* Hero Section */}
+        <div style={{ textAlign: 'center', marginBottom: 120 }}>
           <motion.div
-            className="absolute -top-40 -right-40 w-72 h-72 rounded-full bg-primary-500 opacity-10 blur-2xl"
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </div>
-      )}
-
-      <motion.div
-        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-
-        {/* Hero */}
-        <motion.div className="text-center mb-20">
-          <motion.h1
-            variants={titleVariants}
-            className="flex flex-col items-center gap-4 mb-6"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 12,
+              background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)',
+              padding: '8px 16px', borderRadius: 100, marginBottom: 32,
+              color: '#a5b4fc', fontSize: 13, fontWeight: 600, letterSpacing: '0.05em',
+              textTransform: 'uppercase', fontFamily: 'monospace'
+            }}
           >
-            <span className="text-5xl sm:text-7xl">📱</span>
-            <span className="text-3xl sm:text-6xl font-extrabold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-              QuickQR
-            </span>
+            <span style={{ fontSize: 16 }}>🚀</span> v1.0.4 AVAILABLE NOW
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            style={{
+              fontSize: 'clamp(48px, 10vw, 92px)', fontWeight: 800, lineHeight: 1,
+              letterSpacing: '-4px', marginBottom: 24, fontFamily: 'Syne, sans-serif',
+              background: 'linear-gradient(to bottom, #fff 60%, rgba(255,255,255,0.4))',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            }}
+          >
+            Digital Assets.<br />Simplified.
           </motion.h1>
 
           <motion.p
-            variants={itemVariants}
-            className="text-xl sm:text-3xl font-bold text-gray-800 mb-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            style={{ fontSize: 'clamp(18px, 3vw, 22px)', color: 'rgba(255,255,255,0.4)', maxWidth: 640, margin: '0 auto 48px', lineHeight: 1.6 }}
           >
-            Generate & Manage QR Codes Easily
+            The world's most advanced command center for generating and managing mission-critical QR codes.
           </motion.p>
 
-          <motion.p
-            variants={itemVariants}
-            className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto mb-10"
-          >
-            Create, track and organize all your QR codes in one place.
-          </motion.p>
-
-          {/* CTA */}
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            variants={itemVariants}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}
           >
             <Link to="/register">
               <motion.button
-                whileHover={enableMotion ? { scale: 1.05 } : {}}
-                whileTap={{ scale: 0.96 }}
-                className="px-8 py-4 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold shadow-lg"
+                whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(99,102,241,0.5)' }}
+                whileTap={{ scale: 0.95 }}
+                style={{
+                  padding: '18px 36px', borderRadius: 14, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: 17,
+                  display: 'flex', alignItems: 'center', gap: 10
+                }}
               >
-                🚀 Get Started
+                INITIALIZE TERMINAL ⚡
               </motion.button>
             </Link>
             <Link to="/login">
               <motion.button
-                whileHover={enableMotion ? { scale: 1.05 } : {}}
-                whileTap={{ scale: 0.96 }}
-                className="px-8 py-4 rounded-full border-2 border-primary-200 text-primary-600 font-bold bg-white"
+                whileHover={{ background: 'rgba(255,255,255,0.08)' }}
+                whileTap={{ scale: 0.95 }}
+                style={{
+                  padding: '18px 36px', borderRadius: 14, background: 'rgba(255,255,255,0.03)',
+                  color: '#fff', fontWeight: 700, border: '1px solid rgba(255,255,255,0.08)',
+                  cursor: 'pointer', fontSize: 17
+                }}
               >
-                👋 Sign In
+                ACCESS CONSOLE
               </motion.button>
             </Link>
           </motion.div>
-        </motion.div>
+        </div>
 
-        {/* Features */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-20"
-          variants={containerVariants}
-        >
-          {features.map((f, idx) => (
-            <motion.div
-              key={idx}
-              variants={itemVariants}
-              whileHover={enableMotion ? { y: -8 } : {}}
-              className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow"
-            >
-              <div className="text-4xl mb-4">{f.icon}</div>
-              <h3 className="text-lg font-bold mb-2">{f.title}</h3>
-              <p className="text-gray-600 mb-4">{f.description}</p>
-              <div className={`h-1 rounded-full bg-gradient-to-r ${f.color}`} />
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-20"
-          variants={containerVariants}
-        >
-          {[
-            { n: '10K+', l: 'QR Codes Generated' },
-            { n: '5K+', l: 'Happy Users' },
-            { n: '99.9%', l: 'Uptime' },
-          ].map((s, i) => (
+        {/* Features Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24, marginBottom: 120 }}>
+          {features.map((f, i) => (
             <motion.div
               key={i}
-              variants={itemVariants}
-              className="bg-white rounded-xl p-6 shadow-md text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              style={{
+                padding: 40, borderRadius: 24, background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)'
+              }}
             >
-              <h3 className="text-4xl font-extrabold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-                {s.n}
-              </h3>
-              <p className="text-gray-600 font-semibold">{s.l}</p>
+              <div style={{ fontSize: 32, marginBottom: 24 }}>{f.icon}</div>
+              <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>{f.title}</h3>
+              <p style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>{f.desc}</p>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
-        {/* Final CTA */}
+        {/* Preview Frame */}
         <motion.div
-          variants={itemVariants}
-          className="text-center bg-gradient-to-r from-primary-50 to-secondary-50 rounded-3xl p-10 border"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          style={{
+            position: 'relative', borderRadius: 32, overflow: 'hidden',
+            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+            padding: '20px', boxShadow: '0 50px 100px -20px rgba(0,0,0,0.5)'
+          }}
         >
-          <h2 className="text-2xl sm:text-4xl font-extrabold mb-3">
-            Ready to get started?
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Join thousands creating QR codes effortlessly.
-          </p>
-          <Link to="/register">
-            <motion.button
-              whileHover={enableMotion ? { scale: 1.05 } : {}}
-              whileTap={{ scale: 0.96 }}
-              className="px-10 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-full font-bold shadow-lg"
-            >
-              Start Creating →
-            </motion.button>
-          </Link>
+          <div style={{ height: 24, background: 'rgba(255,255,255,0.05)', borderRadius: '12px 12px 0 0', display: 'flex', alignItems: 'center', padding: '0 16px', gap: 8 }}>
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f56' }} />
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffbd2e' }} />
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#27c93f' }} />
+          </div>
+          <div style={{ height: 400, background: 'rgba(8, 8, 15, 0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.1)', fontSize: 14, fontFamily: 'monospace' }}>
+             // GENSYS_PREVIEW_REDACTED
+          </div>
         </motion.div>
 
-      </motion.div>
+      </main>
 
-      {/* Footer */}
-      <footer className="border-t bg-white py-6 text-center text-gray-600">
-        © 2024 QuickQR. All rights reserved.
+      <footer style={{ textAlign: 'center', padding: '60px 24px', borderTop: '1px solid rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.15)', fontSize: 13, fontFamily: 'monospace' }}>
+        © 2024 QUICKQR_GENSYS. ALL_RIGHTS_RESERVED // [STATUS: STABLE]
       </footer>
-
     </div>
   );
 }

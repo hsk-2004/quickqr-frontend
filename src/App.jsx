@@ -14,26 +14,20 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen flex flex-col bg-white">
+        <div className="min-h-screen flex flex-col">
           <Header />
 
           {/* Main Content */}
           <main className="flex-1 w-full">
             <Routes>
               {/* Public Routes */}
-              <Route path="/" element={<Landing />} />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/landing" element={<Landing />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
 
-              {/* Protected Routes */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
+              {/* Protected Routes (Bypassed for development) */}
+              <Route path="/dashboard" element={<Dashboard />} />
 
               <Route
                 path="/history"

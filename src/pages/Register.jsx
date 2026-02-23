@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -54,158 +54,206 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-secondary-50 px-4 py-12">
-      {/* Animated Background */}
+    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-[#08080f] px-4 py-12">
+      {/* Glow Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute -top-40 -right-40 w-96 h-96 rounded-full opacity-10 blur-3xl bg-primary-500"
-          animate={{ y: [0, -30, 0], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute -bottom-32 -left-40 w-80 h-80 rounded-full opacity-10 blur-3xl bg-secondary-500"
-          animate={{ y: [0, 40, 0], rotate: [0, -90, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        <div style={{
+          position: 'absolute', top: '-10%', left: '-5%',
+          width: 500, height: 500, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+          animation: 'float1 15s ease-in-out infinite',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: '-5%', right: '-10%',
+          width: 400, height: 400, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(236,72,153,0.1) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+          animation: 'float2 20s ease-in-out infinite',
+        }} />
       </div>
+
+      <style>{`
+        @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,40px)} }
+        @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,-30px)} }
+      `}</style>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
         className="relative z-10 w-full max-w-md"
       >
-        <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-10">
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          borderRadius: 24,
+          padding: '40px 32px',
+          backdropFilter: 'blur(24px)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+        }}>
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Join QuickQR</h1>
-            <p className="text-gray-600">Create your account to get started</p>
+          <div className="text-center mb-10">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              style={{
+                width: 60, height: 60, borderRadius: 16,
+                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 20px', fontSize: 28,
+                boxShadow: '0 0 30px rgba(99,102,241,0.4)',
+              }}
+            >⚡</motion.div>
+            <h1 style={{ fontSize: 32, fontWeight: 800, color: '#fff', letterSpacing: '-1px', marginBottom: 8, fontFamily: 'Syne, sans-serif' }}>New Operative</h1>
+            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 15 }}>Create your secure credentials to join the network</p>
           </div>
 
-          {/* Error Messages */}
-          {(error || validationError) && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
-            >
-              <p className="text-red-700 text-sm font-medium">{error || validationError}</p>
-            </motion.div>
-          )}
+          {/* Error Message */}
+          <AnimatePresence>
+            {(error || validationError) && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                style={{
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  borderRadius: 12,
+                  padding: '12px',
+                  color: '#fca5a5',
+                  fontSize: 14,
+                  marginBottom: 24,
+                }}
+              >
+                <p className="flex items-center gap-2">⚠️ {error || validationError}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2">
-                Username
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'monospace' }}>
+                Codename
               </label>
               <input
                 type="text"
-                id="username"
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
                 required
                 placeholder="Choose a username"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                style={{
+                  width: '100%', padding: '12px 14px', borderRadius: 12,
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+                  color: '#fff', fontSize: 15, outline: 'none', transition: 'all 0.2s',
+                }}
+                className="focus:border-indigo-500/50 focus:bg-indigo-500/5 placeholder:text-gray-700"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                Email Address
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'monospace' }}>
+                Email
               </label>
               <input
                 type="email"
-                id="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 required
-                placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                placeholder="commander@quickqr.io"
+                style={{
+                  width: '100%', padding: '12px 14px', borderRadius: 12,
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+                  color: '#fff', fontSize: 15, outline: 'none', transition: 'all 0.2s',
+                }}
+                className="focus:border-indigo-500/50 focus:bg-indigo-500/5 placeholder:text-gray-700"
               />
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="At least 6 characters"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                placeholder="Confirm password"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'monospace' }}>
+                  Secret Key
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  placeholder="••••••••"
+                  style={{
+                    width: '100%', padding: '12px 14px', borderRadius: 12,
+                    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+                    color: '#fff', fontSize: 15, outline: 'none', transition: 'all 0.2s',
+                  }}
+                  className="focus:border-indigo-500/50 focus:bg-indigo-500/5 placeholder:text-gray-700"
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'monospace' }}>
+                  Confirm key
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  placeholder="••••••••"
+                  style={{
+                    width: '100%', padding: '12px 14px', borderRadius: 12,
+                    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+                    color: '#fff', fontSize: 15, outline: 'none', transition: 'all 0.2s',
+                  }}
+                  className="focus:border-indigo-500/50 focus:bg-indigo-500/5 placeholder:text-gray-700"
+                />
+              </div>
             </div>
 
             <motion.button
               type="submit"
               disabled={loading}
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.01, boxShadow: '0 0 25px rgba(99,102,241,0.4)' }}
               whileTap={{ scale: 0.98 }}
-              className="w-full mt-8 py-3 px-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{
+                width: '100%', py: 3, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                color: '#fff', fontWeight: 700, borderRadius: 12, border: 'none',
+                height: 52, fontSize: 16, cursor: 'pointer', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', gap: 10, transition: 'all 0.3s', marginTop: 12,
+              }}
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Creating Account...
-                </span>
+                <>
+                  <motion.span
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+                    style={{ width: 18, height: 18, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%' }}
+                  />
+                  INITIALIZING...
+                </>
               ) : (
-                'Sign Up'
+                <>SIGN UP ⚡</>
               )}
             </motion.button>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or</span>
-            </div>
+          {/* Footer */}
+          <div className="mt-8 pt-8 border-t border-white/5 text-center">
+            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 14 }}>
+              Active operative?{' '}
+              <Link to="/login" style={{ color: '#818cf8', fontWeight: 600 }} className="hover:underline">Login</Link>
+            </p>
           </div>
-
-          {/* Links */}
-          <p className="text-center text-gray-600">
-            Already have an account?{' '}
-            <Link 
-              to="/login"
-              className="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
-            >
-              Sign In
-            </Link>
-          </p>
         </div>
 
-        {/* Footer Link */}
-        <div className="text-center mt-6">
-          <Link
-            to="/"
-            className="text-sm text-gray-600 hover:text-primary-600 transition-colors font-medium"
-          >
-            ← Back to Home
+        <div className="text-center mt-8">
+          <Link to="/" style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }} className="hover:text-white transition-colors">
+            <span>←</span> Back to Terminal
           </Link>
         </div>
       </motion.div>
