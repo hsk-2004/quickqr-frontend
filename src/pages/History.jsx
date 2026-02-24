@@ -56,29 +56,43 @@ export default function History() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-primary-50 to-secondary-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-[#08080f] text-white overflow-x-hidden">
+      {/* Glow Orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div style={{
+          position: 'absolute', top: '-10%', right: '-5%',
+          width: 500, height: 500, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+        }} />
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8"
+          className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12"
         >
           <div>
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-2">
-              QR Code History
+            <h1 style={{ fontFamily: 'Syne, sans-serif' }} className="text-3xl sm:text-4xl font-extrabold mb-3">
+              Operation History 📂
             </h1>
-            <p className="text-lg text-gray-600">
-              View and manage all your previously generated codes
+            <p className="text-sm sm:text-base text-gray-500 font-medium">
+              Review and manage your deployed digital bridging fleet.
             </p>
           </div>
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-shadow whitespace-nowrap"
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.08)'
+            }}
+            className="inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl hover:bg-white/5 transition-all text-sm"
           >
             <span>←</span>
-            <span>Back to Dashboard</span>
+            <span>Return to Console</span>
           </Link>
         </motion.div>
 
@@ -87,21 +101,22 @@ export default function History() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="flex gap-3 mb-8"
+          className="flex gap-2 sm:gap-4 mb-8"
         >
           {[
-            { value: 'all', label: '📋 All Time', icon: '📋' },
-            { value: 'today', label: '📅 Today', icon: '📅' },
+            { value: 'all', label: 'All Deployment', icon: '📋' },
+            { value: 'today', label: 'Today Only', icon: '📅' },
           ].map((btn) => (
             <motion.button
               key={btn.value}
               onClick={() => setFilter(btn.value)}
               whileTap={{ scale: 0.95 }}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                filter === btn.value
-                  ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                  : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-primary-300 hover:bg-primary-50'
-              }`}
+              style={{
+                background: filter === btn.value ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(255,255,255,0.03)',
+                border: filter === btn.value ? 'none' : '1px solid rgba(255,255,255,0.08)',
+              }}
+              className={`px-5 py-2.5 rounded-xl font-bold transition-all text-xs sm:text-sm ${filter === btn.value ? 'text-white shadow-lg' : 'text-gray-400'
+                }`}
             >
               {btn.label}
             </motion.button>
@@ -113,71 +128,71 @@ export default function History() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="bg-white rounded-2xl shadow-lg overflow-hidden"
+          style={{
+            background: 'rgba(15,15,25,0.7)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            backdropFilter: 'blur(20px)'
+          }}
+          className="rounded-3xl shadow-2xl overflow-hidden"
         >
           {isLoading ? (
-            <div className="py-20 text-center">
-              <div className="inline-flex gap-2 mb-4">
-                <span className="inline-block w-3 h-3 rounded-full bg-primary-400 animate-bounce" />
-                <span className="inline-block w-3 h-3 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: '0.1s' }} />
-                <span className="inline-block w-3 h-3 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: '0.2s' }} />
-              </div>
-              <p className="text-gray-600 font-medium">Loading history...</p>
+            <div className="py-24 text-center">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+                className="inline-block w-8 h-8 rounded-full border-2 border-indigo-500/20 border-t-indigo-500 mb-4"
+              />
+              <p className="text-gray-500 font-mono text-xs uppercase tracking-widest">Loading History...</p>
             </div>
           ) : filteredHistory.length === 0 ? (
-            <div className="py-20 text-center">
-              <p className="text-5xl mb-4">📭</p>
-              <p className="text-gray-600 text-lg font-medium">
-                No QR codes found for this period
+            <div className="py-24 text-center">
+              <p className="text-4xl mb-6 opacity-30">◈</p>
+              <p className="text-gray-500 font-mono text-xs uppercase tracking-widest">
+                // No Data Found
               </p>
             </div>
           ) : (
             <>
-              {/* Desktop Table */}
-              <div className="hidden md:block overflow-x-auto">
+              {/* Desktop View */}
+              <div className="hidden lg:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-primary-50">
-                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Name</th>
-                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Data</th>
-                      <th className="px-6 py-4 text-center text-sm font-bold text-gray-900">Created</th>
-                      <th className="px-6 py-4 text-center text-sm font-bold text-gray-900">Scans</th>
-                      <th className="px-6 py-4 text-right text-sm font-bold text-gray-900">Actions</th>
+                    <tr className="border-b border-white/5 bg-white/2">
+                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest font-mono">Codename</th>
+                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest font-mono">Target Data</th>
+                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest font-mono">Timestamp</th>
+                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest font-mono">Access</th>
+                      <th className="px-8 py-5 text-right text-xs font-bold text-gray-500 uppercase tracking-widest font-mono">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-white/5">
                     {filteredHistory.map((qr) => (
                       <motion.tr
                         key={qr.id}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="hover:bg-primary-50 transition-colors"
+                        className="hover:bg-white/2 transition-colors group"
                       >
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                        <td className="px-8 py-5 text-sm font-bold text-white">
                           {qr.name}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          <code className="bg-gray-100 px-3 py-1 rounded text-xs break-all max-w-xs inline-block">
+                        <td className="px-8 py-5 text-xs text-gray-500 font-mono">
+                          <span className="opacity-70 group-hover:opacity-100 transition-opacity">
                             {qr.data.length > 50 ? qr.data.substring(0, 50) + '...' : qr.data}
-                          </code>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600 text-center">
-                          {qr.createdAt}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600 text-center">
-                          <span className="inline-block px-3 py-1 bg-primary-100 text-primary-700 rounded-full font-semibold">
-                            {qr.scans}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-right">
-                          <div className="flex flex-col sm:flex-row justify-end gap-2">
-                            <button className="px-3 sm:px-4 py-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 font-semibold transition-colors text-sm whitespace-nowrap">
-                              📥 Download
-                            </button>
-                            <button className="px-3 sm:px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 font-semibold transition-colors text-sm whitespace-nowrap">
-                              🗑️ Delete
-                            </button>
+                        <td className="px-8 py-5 text-xs text-center text-gray-500 font-mono">
+                          {qr.createdAt}
+                        </td>
+                        <td className="px-8 py-5 text-center">
+                          <span className="inline-block px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-lg font-mono text-xs font-bold">
+                            {qr.scans} SCANS
+                          </span>
+                        </td>
+                        <td className="px-8 py-5 text-right">
+                          <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-all">📥</button>
+                            <button className="p-2 hover:bg-red-500/10 rounded-lg text-gray-500 hover:text-red-400 transition-all">🗑️</button>
                           </div>
                         </td>
                       </motion.tr>
@@ -186,43 +201,40 @@ export default function History() {
                 </table>
               </div>
 
-              {/* Mobile Card View */}
-              <div className="md:hidden divide-y divide-gray-200">
+              {/* Tablet/Mobile Card View */}
+              <div className="lg:hidden divide-y divide-white/5">
                 {filteredHistory.map((qr) => (
                   <motion.div
                     key={qr.id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="p-6 hover:bg-primary-50 transition-colors"
+                    className="p-6 sm:p-8 hover:bg-white/2 transition-colors"
                   >
-                    <div className="mb-4">
-                      <h3 className="font-bold text-gray-900 mb-2">{qr.name}</h3>
-                      <code className="bg-gray-100 px-3 py-1 rounded text-xs break-all inline-block w-full mb-3">
-                        {qr.data}
-                      </code>
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="font-bold text-white mb-2">{qr.name}</h3>
+                        <div className="font-mono text-[10px] text-gray-600 bg-white/2 px-2 py-1 rounded inline-block break-all max-w-full">
+                          {qr.data}
+                        </div>
+                      </div>
+                      <span className="px-2 py-1 bg-indigo-500/10 text-indigo-400 rounded text-[10px] font-mono font-bold">
+                        {qr.scans} SCANS
+                      </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <p className="text-xs text-gray-600 font-semibold mb-1">Created</p>
-                        <p className="text-sm text-gray-900">{qr.createdAt}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-600 font-semibold mb-1">Scans</p>
-                        <p className="text-sm font-bold bg-primary-100 text-primary-700 rounded px-2 py-1 inline-block">
-                          {qr.scans}
-                        </p>
-                      </div>
-                    </div>
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <p className="text-[10px] text-gray-600 font-mono uppercase tracking-widest">
+                        Deployed: {qr.createdAt}
+                      </p>
 
-                    <div className="flex gap-2">
-                      <button className="flex-1 px-4 py-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 font-semibold transition-colors text-sm">
-                        📥 Download
-                      </button>
-                      <button className="flex-1 px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 font-semibold transition-colors text-sm">
-                        🗑️ Delete
-                      </button>
+                      <div className="flex gap-2">
+                        <button className="px-4 py-2 bg-white/5 text-xs font-bold rounded-lg hover:bg-white/10 transition-all">
+                          DOWNLOAD
+                        </button>
+                        <button className="px-4 py-2 bg-red-500/10 text-red-400 text-xs font-bold rounded-lg hover:bg-red-500/20 transition-all">
+                          PURGE
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -231,17 +243,23 @@ export default function History() {
           )}
         </motion.div>
 
-        {/* Summary */}
+        {/* Console Summary */}
         {!isLoading && filteredHistory.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="mt-8 p-6 bg-primary-50 border border-primary-200 rounded-2xl"
+            transition={{ delay: 0.3 }}
+            style={{
+              background: 'rgba(255,255,255,0.02)',
+              border: '1px solid rgba(255,255,255,0.05)'
+            }}
+            className="mt-8 p-5 rounded-2xl flex items-center justify-between"
           >
-            <p className="text-lg font-semibold text-gray-900">
-              📊 Summary: You have <span className="text-primary-600">{filteredHistory.length}</span> QR code{filteredHistory.length !== 1 ? 's' : ''} {filter === 'today' ? 'created today' : 'in total'}
+            <p className="font-mono text-[11px] sm:text-xs text-gray-500 uppercase tracking-widest">
+              Fleet Status: <span className="text-indigo-400">{filteredHistory.length} Deployments Active</span>
             </p>
+            <div className="hidden sm:block h-px flex-1 mx-8 bg-white/5"></div>
+            <p className="font-mono text-[11px] text-gray-700">Ver 1.0.4</p>
           </motion.div>
         )}
       </div>

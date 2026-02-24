@@ -34,23 +34,23 @@ export default function Landing() {
     <div style={{ background: '#08080f', minHeight: '100vh', color: '#fff', position: 'relative', overflowX: 'hidden' }}>
       <GlowOrbs />
 
-      <main style={{ position: 'relative', zIndex: 1, maxWidth: 1200, margin: '0 auto', padding: '120px 24px 80px' }}>
+      <main style={{ position: 'relative', zIndex: 1, maxWidth: 1200, margin: '0 auto', padding: 'clamp(80px, 15vw, 120px) 20px 60px' }}>
 
         {/* Hero Section */}
-        <div style={{ textAlign: 'center', marginBottom: 120 }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(60px, 12vw, 120px)' }}>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: 12,
+              display: 'inline-flex', alignItems: 'center', gap: 10,
               background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)',
-              padding: '8px 16px', borderRadius: 100, marginBottom: 32,
-              color: '#a5b4fc', fontSize: 13, fontWeight: 600, letterSpacing: '0.05em',
+              padding: '6px 14px', borderRadius: 100, marginBottom: 24,
+              color: '#a5b4fc', fontSize: 'clamp(10px, 2vw, 12px)', fontWeight: 600, letterSpacing: '0.05em',
               textTransform: 'uppercase', fontFamily: 'monospace'
             }}
           >
-            <span style={{ fontSize: 16 }}>🚀</span> v1.0.4 AVAILABLE NOW
+            <span style={{ fontSize: 'clamp(12px, 2.5vw, 16px)' }}>🚀</span> v1.0.4 AVAILABLE NOW
           </motion.div>
 
           <motion.h1
@@ -58,8 +58,8 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             style={{
-              fontSize: 'clamp(48px, 10vw, 92px)', fontWeight: 800, lineHeight: 1,
-              letterSpacing: '-4px', marginBottom: 24, fontFamily: 'Syne, sans-serif',
+              fontSize: 'clamp(38px, 9vw, 84px)', fontWeight: 800, lineHeight: 1.1,
+              letterSpacing: '-2px', marginBottom: 20, fontFamily: 'Syne, sans-serif',
               background: 'linear-gradient(to bottom, #fff 60%, rgba(255,255,255,0.4))',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}
@@ -71,7 +71,7 @@ export default function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            style={{ fontSize: 'clamp(18px, 3vw, 22px)', color: 'rgba(255,255,255,0.4)', maxWidth: 640, margin: '0 auto 48px', lineHeight: 1.6 }}
+            style={{ fontSize: 'clamp(16px, 2.5vw, 20px)', color: 'rgba(255,255,255,0.3)', maxWidth: 600, margin: '0 auto 40px', lineHeight: 1.5, padding: '0 10px' }}
           >
             The world's most advanced command center for generating and managing mission-critical QR codes.
           </motion.p>
@@ -80,29 +80,29 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}
+            style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}
           >
-            <Link to="/register">
+            <Link to="/register" style={{ textDecoration: 'none' }}>
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(99,102,241,0.5)' }}
                 whileTap={{ scale: 0.95 }}
                 style={{
-                  padding: '18px 36px', borderRadius: 14, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                  color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: 17,
+                  padding: 'clamp(14px, 3vw, 18px) clamp(28px, 5vw, 36px)', borderRadius: 14, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: 'clamp(15px, 2.5vw, 17px)',
                   display: 'flex', alignItems: 'center', gap: 10
                 }}
               >
-                INITIALIZE TERMINAL ⚡
+                INITIALIZE ⚡
               </motion.button>
             </Link>
-            <Link to="/login">
+            <Link to="/login" style={{ textDecoration: 'none' }}>
               <motion.button
                 whileHover={{ background: 'rgba(255,255,255,0.08)' }}
                 whileTap={{ scale: 0.95 }}
                 style={{
-                  padding: '18px 36px', borderRadius: 14, background: 'rgba(255,255,255,0.03)',
+                  padding: 'clamp(14px, 3vw, 18px) clamp(28px, 5vw, 36px)', borderRadius: 14, background: 'rgba(255,255,255,0.03)',
                   color: '#fff', fontWeight: 700, border: '1px solid rgba(255,255,255,0.08)',
-                  cursor: 'pointer', fontSize: 17
+                  cursor: 'pointer', fontSize: 'clamp(15px, 2.5vw, 17px)'
                 }}
               >
                 ACCESS CONSOLE
@@ -112,7 +112,12 @@ export default function Landing() {
         </div>
 
         {/* Features Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24, marginBottom: 120 }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: 20,
+          marginBottom: 'clamp(60px, 12vw, 120px)'
+        }}>
           {features.map((f, i) => (
             <motion.div
               key={i}
@@ -121,13 +126,13 @@ export default function Landing() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               style={{
-                padding: 40, borderRadius: 24, background: 'rgba(255,255,255,0.02)',
+                padding: 'clamp(24px, 5vw, 40px)', borderRadius: 24, background: 'rgba(255,255,255,0.02)',
                 border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)'
               }}
             >
-              <div style={{ fontSize: 32, marginBottom: 24 }}>{f.icon}</div>
-              <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>{f.title}</h3>
-              <p style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>{f.desc}</p>
+              <div style={{ fontSize: 'clamp(24px, 4vw, 32px)', marginBottom: 20 }}>{f.icon}</div>
+              <h3 style={{ fontSize: 'clamp(18px, 3vw, 20px)', fontWeight: 700, marginBottom: 10 }}>{f.title}</h3>
+              <p style={{ color: 'rgba(255,255,255,0.3)', lineHeight: 1.5, fontSize: 'clamp(13px, 2vw, 14px)' }}>{f.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -138,24 +143,24 @@ export default function Landing() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           style={{
-            position: 'relative', borderRadius: 32, overflow: 'hidden',
+            position: 'relative', borderRadius: 'clamp(20px, 4vw, 32px)', overflow: 'hidden',
             background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
-            padding: '20px', boxShadow: '0 50px 100px -20px rgba(0,0,0,0.5)'
+            padding: '12px', boxShadow: '0 40px 80px -20px rgba(0,0,0,0.5)'
           }}
         >
-          <div style={{ height: 24, background: 'rgba(255,255,255,0.05)', borderRadius: '12px 12px 0 0', display: 'flex', alignItems: 'center', padding: '0 16px', gap: 8 }}>
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f56' }} />
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffbd2e' }} />
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#27c93f' }} />
+          <div style={{ height: 20, background: 'rgba(255,255,255,0.05)', borderRadius: '10px 10px 0 0', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 6 }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ff5f56' }} />
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffbd2e' }} />
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#27c93f' }} />
           </div>
-          <div style={{ height: 400, background: 'rgba(8, 8, 15, 0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.1)', fontSize: 14, fontFamily: 'monospace' }}>
-             // GENSYS_PREVIEW_REDACTED
+          <div style={{ height: 'clamp(250px, 40vw, 400px)', background: 'rgba(8, 8, 15, 0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.1)', fontSize: 'clamp(11px, 2vw, 14px)', fontFamily: 'monospace', padding: 20, textAlign: 'center' }}>
+             // GENSYS_PREVIEW_REDACTED // READY_FOR_DEPLOYMENT
           </div>
         </motion.div>
 
       </main>
 
-      <footer style={{ textAlign: 'center', padding: '60px 24px', borderTop: '1px solid rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.15)', fontSize: 13, fontFamily: 'monospace' }}>
+      <footer style={{ textAlign: 'center', padding: '40px 20px', borderTop: '1px solid rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.1)', fontSize: 'clamp(10px, 2vw, 12px)', fontFamily: 'monospace' }}>
         © 2024 QUICKQR_GENSYS. ALL_RIGHTS_RESERVED // [STATUS: STABLE]
       </footer>
     </div>

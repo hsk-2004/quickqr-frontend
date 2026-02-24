@@ -133,13 +133,12 @@ const QRCard = ({ qr, onDelete }) => {
 
         <p style={{
           margin: 0,
-          fontSize: 12,
-          color: 'rgba(255,255,255,0.35)',
+          fontSize: 11,
+          color: 'rgba(255,255,255,0.3)',
           fontFamily: 'monospace',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
+          wordBreak: 'break-all',
           marginBottom: 16,
+          lineHeight: 1.4
         }}>
           {qr.url}
         </p>

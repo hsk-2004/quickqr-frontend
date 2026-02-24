@@ -273,23 +273,37 @@ export default function Dashboard() {
 
         .qr-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-          gap: 16px;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 20px;
         }
 
-        @media (max-width: 1200px) {
-          .dashboard-grid { grid-template-columns: 380px 1fr; }
+        @media (max-width: 1280px) {
+          .dashboard-grid { grid-template-columns: 380px 1fr; gap: 20px; }
+          .dashboard-container { padding: 40px 24px; }
         }
 
         @media (max-width: 1024px) {
-          .dashboard-grid { grid-template-columns: 1fr; }
-          .dashboard-container { padding: 32px 24px; }
+          .dashboard-grid { 
+            grid-template-columns: 1fr;
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          .dashboard-container { padding: 32px 20px; }
+          .qr-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
+          .stat-grid { 
+            grid-template-columns: 1fr !important;
+            gap: 12px;
+          }
           .dashboard-container { padding: 24px 16px; }
           .qr-grid { grid-template-columns: 1fr; }
-          .stat-grid { grid-template-columns: 1fr !important; }
+        }
+
+        @media (max-width: 480px) {
+          .dashboard-container { padding: 20px 12px; }
+          .qr-grid { gap: 12px; }
         }
       `}</style>
 
@@ -302,7 +316,7 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          style={{ marginBottom: 48, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 24 }}
+          style={{ marginBottom: 40, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20 }}
         >
           <div style={{ flex: '1 1 300px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
@@ -320,18 +334,18 @@ export default function Dashboard() {
 
             <h1 style={{
               fontFamily: 'Syne, sans-serif',
-              fontSize: 'clamp(32px, 8vw, 52px)',
+              fontSize: 'clamp(28px, 6vw, 42px)',
               fontWeight: 800,
               margin: 0,
-              lineHeight: 1.05,
-              letterSpacing: '-1.5px',
+              lineHeight: 1.1,
+              letterSpacing: '-1px',
               background: 'linear-gradient(135deg, #fff 40%, rgba(255,255,255,0.5))',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
               {isAuthenticated ? `Hey, ${user?.username || 'User'} 👾` : 'Welcome to QuickQR ⚡'}
             </h1>
-            <p style={{ color: 'rgba(255,255,255,0.35)', marginTop: 8, fontSize: 'clamp(14px, 2vw, 15px)', letterSpacing: '0.01em' }}>
+            <p style={{ color: 'rgba(255,255,255,0.3)', marginTop: 6, fontSize: 'clamp(13px, 1.5vw, 14px)', letterSpacing: '0.01em', maxWidth: 600 }}>
               {isAuthenticated
                 ? 'Your QR command center — generate, track, destroy.'
                 : 'The ultimate terminal for rapid QR generation. Ready for deployment.'}
@@ -340,11 +354,11 @@ export default function Dashboard() {
 
           {/* Time stamp */}
           <div style={{
-            fontFamily: 'monospace', fontSize: 12, color: 'rgba(255,255,255,0.25)',
-            letterSpacing: '0.1em', textAlign: 'right', minWidth: 150
-          }}>
-            <div style={{ fontWeight: 600, color: 'rgba(255,255,255,0.4)' }}>{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
-            <div style={{ color: 'rgba(255,255,255,0.12)' }}>SYSTEM_CLOCK // {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+            fontFamily: 'monospace', fontSize: 11, color: 'rgba(255,255,255,0.2)',
+            letterSpacing: '0.05em', textAlign: 'left', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: 12
+          }} className="hidden sm:block">
+            <div style={{ fontWeight: 600, color: 'rgba(255,255,255,0.3)' }}>{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
+            <div style={{ color: 'rgba(255,255,255,0.1)' }}>SYS_CLK // {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
           </div>
         </motion.div>
 
@@ -366,10 +380,10 @@ export default function Dashboard() {
               background: 'rgba(15,15,25,0.7)',
               border: '1px solid rgba(255,255,255,0.07)',
               borderRadius: 24,
-              padding: 28,
+              padding: 'clamp(20px, 4vw, 28px)',
               backdropFilter: 'blur(24px)',
-              position: 'sticky',
-              top: 24,
+              position: 'relative',
+              top: 'auto',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
                 <div style={{
@@ -438,7 +452,7 @@ export default function Dashboard() {
               background: 'rgba(15,15,25,0.7)',
               border: '1px solid rgba(255,255,255,0.07)',
               borderRadius: 24,
-              padding: 28,
+              padding: 'clamp(20px, 4vw, 28px)',
               backdropFilter: 'blur(24px)',
             }}>
               {/* List header */}
