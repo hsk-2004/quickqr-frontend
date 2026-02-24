@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { qrAPI } from '../services/api';
@@ -155,12 +156,16 @@ function FilterPill({ type, active, onClick }) {
 
 /* ── Main Dashboard ──────────────────────────────────────────── */
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [qrCodes, setQrCodes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setIsLoading(false);
+      return;
+    }
     const fetchQRCodes = async () => {
       try {
         const res = await qrAPI.getHistory();
@@ -172,7 +177,7 @@ export default function Dashboard() {
       }
     };
     fetchQRCodes();
-  }, []);
+  }, [isAuthenticated]);
 
   const handleCreateQR = useCallback((qrFromBackend) => {
     if (!qrFromBackend) return;
@@ -324,10 +329,12 @@ export default function Dashboard() {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-              Hey, {user?.username || 'User'} 👾
+              {isAuthenticated ? `Hey, ${user?.username || 'User'} 👾` : 'Welcome to QuickQR ⚡'}
             </h1>
             <p style={{ color: 'rgba(255,255,255,0.35)', marginTop: 8, fontSize: 'clamp(14px, 2vw, 15px)', letterSpacing: '0.01em' }}>
-              Your QR command center — generate, track, destroy.
+              {isAuthenticated
+                ? 'Your QR command center — generate, track, destroy.'
+                : 'The ultimate terminal for rapid QR generation. Ready for deployment.'}
             </p>
           </div>
 
@@ -373,6 +380,50 @@ export default function Dashboard() {
                 }}>⚡</div>
                 <span style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.3px' }}>New QR Code</span>
               </div>
+
+              {!isAuthenticated && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  style={{
+                    background: 'rgba(99,102,241,0.1)',
+                    border: '1px solid rgba(99,102,241,0.2)',
+                    borderRadius: 16,
+                    padding: '20px',
+                    marginBottom: '24px',
+                    textAlign: 'center'
+                  }}
+                >
+                  <p style={{ color: '#a5b4fc', fontSize: 14, fontWeight: 600, marginBottom: 12 }}>
+                    Authentication Required
+                  </p>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, marginBottom: 16 }}>
+                    Please login to initialize the QR generation engine.
+                  </p>
+                  <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+                    <Link to="/login" style={{
+                      padding: '8px 16px',
+                      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                      borderRadius: 10,
+                      color: '#fff',
+                      fontSize: 13,
+                      fontWeight: 700,
+                      textDecoration: 'none'
+                    }}>SIGN IN</Link>
+                    <Link to="/register" style={{
+                      padding: '8px 16px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 10,
+                      color: '#fff',
+                      fontSize: 13,
+                      fontWeight: 700,
+                      textDecoration: 'none'
+                    }}>JOIN NOW</Link>
+                  </div>
+                </motion.div>
+              )}
+
               <QRForm onQRGenerated={handleCreateQR} />
             </div>
           </motion.div>
@@ -453,9 +504,9 @@ export default function Dashboard() {
                   >
                     <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.3 }}>◈</div>
                     <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 14, fontFamily: 'monospace', letterSpacing: '0.05em' }}>
-                      {filter === 'all'
-                        ? '// No QR codes yet. Generate one.'
-                        : `// No codes of type "${filter}"`}
+                      {!isAuthenticated
+                        ? '// LOGIN TO SYNC YOUR DATA'
+                        : (filter === 'all' ? '// No QR codes yet. Generate one.' : `// No codes of type "${filter}"`)}
                     </p>
                   </motion.div>
                 ) : (

@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import GuestRoute from './components/GuestRoute';
 
 import Landing from './pages/Landing';
 import Register from './pages/Register';
@@ -21,14 +22,29 @@ function App() {
           <main className="flex-1 w-full">
             <Routes>
               {/* Public Routes */}
-              <Route path="/" element={<Dashboard />} />
               <Route path="/landing" element={<Landing />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
+              <Route
+                path="/register"
+                element={
+                  <GuestRoute>
+                    <Register />
+                  </GuestRoute>
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <GuestRoute>
+                    <Login />
+                  </GuestRoute>
+                }
+              />
 
-              {/* Protected Routes (Bypassed for development) */}
+              {/* These are now public, but will show limited content if not logged in */}
+              <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
 
+              {/* Only history remains strictly protected */}
               <Route
                 path="/history"
                 element={

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 import { qrAPI } from '../services/api';
 
 const QRForm = ({ onQRGenerated, loading: parentLoading }) => {
+  const { isAuthenticated } = useAuth();
   const [url, setUrl] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -11,6 +13,10 @@ const QRForm = ({ onQRGenerated, loading: parentLoading }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      setError('Please login to generate QR codes');
+      return;
+    }
     setError(null);
     setSuccess(null);
 
@@ -74,8 +80,8 @@ const QRForm = ({ onQRGenerated, loading: parentLoading }) => {
               type="text"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://your-link.com"
-              disabled={loading || parentLoading}
+              placeholder={isAuthenticated ? "https://your-link.com" : "Login to unlock"}
+              disabled={loading || parentLoading || !isAuthenticated}
               style={{
                 width: '100%',
                 background: 'rgba(255,255,255,0.03)',
@@ -105,8 +111,8 @@ const QRForm = ({ onQRGenerated, loading: parentLoading }) => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g., Portfolio Site"
-              disabled={loading || parentLoading}
+              placeholder={isAuthenticated ? "e.g., Portfolio Site" : "System locked"}
+              disabled={loading || parentLoading || !isAuthenticated}
               style={{
                 width: '100%',
                 background: 'rgba(255,255,255,0.03)',
@@ -170,18 +176,20 @@ const QRForm = ({ onQRGenerated, loading: parentLoading }) => {
         {/* Submit Button */}
         <motion.button
           type="submit"
-          disabled={loading || parentLoading}
-          whileHover={{ scale: 1.01, boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}
-          whileTap={{ scale: 0.98 }}
+          disabled={loading || parentLoading || !isAuthenticated}
+          whileHover={isAuthenticated ? { scale: 1.01, boxShadow: '0 0 20px rgba(99,102,241,0.3)' } : {}}
+          whileTap={isAuthenticated ? { scale: 0.98 } : {}}
           style={{
             width: '100%',
             height: 52,
-            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-            color: '#fff',
+            background: isAuthenticated
+              ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
+              : 'rgba(255,255,255,0.05)',
+            color: isAuthenticated ? '#fff' : 'rgba(255,255,255,0.2)',
             fontWeight: 700,
             borderRadius: 14,
-            border: 'none',
-            cursor: 'pointer',
+            border: isAuthenticated ? 'none' : '1px solid rgba(255,255,255,0.1)',
+            cursor: isAuthenticated ? 'pointer' : 'not-allowed',
             fontSize: 15,
             letterSpacing: '0.02em',
             display: 'flex',
@@ -203,8 +211,8 @@ const QRForm = ({ onQRGenerated, loading: parentLoading }) => {
             </>
           ) : (
             <>
-              <span style={{ fontSize: 18 }}>⚡</span>
-              INITIALIZE QR
+              <span style={{ fontSize: 18 }}>{isAuthenticated ? '⚡' : '🔒'}</span>
+              {isAuthenticated ? 'INITIALIZE QR' : 'ENGINE LOCKED'}
             </>
           )}
         </motion.button>
